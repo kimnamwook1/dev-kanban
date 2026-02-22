@@ -53,7 +53,9 @@ export function ProjectCard({ project, isDragOverlay, onClick }: ProjectCardProp
       style={style}
       {...(isDragOverlay ? {} : attributes)}
       {...(isDragOverlay ? {} : listeners)}
-      onClick={onClick}
+      onClick={() => {
+        if (!isDragging && onClick) onClick();
+      }}
       className={`cursor-grab rounded-md border border-border-color bg-card-bg px-3 py-2.5 transition-colors hover:bg-card-bg-hover ${
         isDragging ? 'opacity-50' : ''
       } ${isDragOverlay ? 'shadow-lg ring-1 ring-white/10' : ''}`}

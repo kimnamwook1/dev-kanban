@@ -14,6 +14,7 @@ interface ColumnProps {
   color: string;
   projects: Project[];
   onAddClick?: () => void;
+  onCardClick?: (project: Project) => void;
 }
 
 const borderColorMap: Record<ColumnType, string> = {
@@ -28,7 +29,7 @@ const badgeBgMap: Record<ColumnType, string> = {
   done: 'bg-column-done',
 };
 
-export function Column({ status, label, color, projects, onAddClick }: ColumnProps) {
+export function Column({ status, label, color, projects, onAddClick, onCardClick }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
     data: { type: 'column', status },
@@ -68,7 +69,11 @@ export function Column({ status, label, color, projects, onAddClick }: ColumnPro
           strategy={verticalListSortingStrategy}
         >
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onClick={() => onCardClick?.(project)}
+            />
           ))}
         </SortableContext>
 

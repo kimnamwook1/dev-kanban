@@ -14,6 +14,7 @@ import {
 import { Column } from './Column';
 import { ProjectCard } from '@/components/Card/ProjectCard';
 import { ProjectForm } from '@/components/Form/ProjectForm';
+import { CardDetail } from '@/components/Card/CardDetail';
 import { useProjectStore } from '@/store/useProjectStore';
 import { COLUMNS, type ColumnType, type Project } from '@/lib/types';
 
@@ -22,6 +23,9 @@ export function KanbanBoard() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formDefaultStatus, setFormDefaultStatus] = useState<ColumnType>('idea');
+  const [editProject, setEditProject] = useState<Project | undefined>(undefined);
+  const [detailProject, setDetailProject] = useState<Project | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -95,6 +99,7 @@ export function KanbanBoard() {
         <button
           type="button"
           onClick={() => {
+            setEditProject(undefined);
             setFormDefaultStatus('idea');
             setFormOpen(true);
           }}
@@ -120,8 +125,13 @@ export function KanbanBoard() {
               color={col.color}
               projects={getProjectsByStatus(col.key)}
               onAddClick={() => {
+                setEditProject(undefined);
                 setFormDefaultStatus(col.key);
                 setFormOpen(true);
+              }}
+              onCardClick={(project) => {
+                setDetailProject(project);
+                setDetailOpen(true);
               }}
             />
           ))}
@@ -136,8 +146,23 @@ export function KanbanBoard() {
 
       <ProjectForm
         open={formOpen}
-        onOpenChange={setFormOpen}
+        onOpenChange={(open) => {
+          setFormOpen(open);
+          if (!open) setEditProject(undefined);
+        }}
         defaultStatus={formDefaultStatus}
+        editProject={editProject}
+      />
+
+      <CardDetail
+        project={detailProject}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        onEdit={(project) => {
+          setDetailOpen(false);
+          setEditProject(project);
+          setFormOpen(true);
+        }}
       />
     </div>
   );

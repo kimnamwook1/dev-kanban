@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -15,11 +15,12 @@ import { Column } from './Column';
 import { ProjectCard } from '@/components/Card/ProjectCard';
 import { ProjectForm } from '@/components/Form/ProjectForm';
 import { CardDetail } from '@/components/Card/CardDetail';
+import { SearchFilter } from '@/components/UI/SearchFilter';
 import { useProjectStore } from '@/store/useProjectStore';
 import { COLUMNS, type ColumnType, type Project } from '@/lib/types';
 
 export function KanbanBoard() {
-  const { projects, moveProject, reorderProject } = useProjectStore();
+  const { projects, moveProject, reorderProject, searchQuery, filterTag, filterPriority } = useProjectStore();
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formDefaultStatus, setFormDefaultStatus] = useState<ColumnType>('idea');
@@ -35,8 +36,31 @@ export function KanbanBoard() {
     })
   );
 
+  const filteredProjects = useMemo(() => {
+    let result = projects;
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(query) ||
+          p.description.toLowerCase().includes(query)
+      );
+    }
+
+    if (filterTag) {
+      result = result.filter((p) => p.tags.includes(filterTag));
+    }
+
+    if (filterPriority) {
+      result = result.filter((p) => p.priority === filterPriority);
+    }
+
+    return result;
+  }, [projects, searchQuery, filterTag, filterPriority]);
+
   function getProjectsByStatus(status: ColumnType): Project[] {
-    return projects
+    return filteredProjects
       .filter((p) => p.status === status)
       .sort((a, b) => a.order - b.order);
   }
@@ -108,6 +132,9 @@ export function KanbanBoard() {
           + New Project
         </button>
       </header>
+
+      {/* Search & Filter Bar */}
+      <SearchFilter />
 
       {/* Board */}
       <DndContext

@@ -17,10 +17,12 @@ import { ProjectForm } from '@/components/Form/ProjectForm';
 import { CardDetail } from '@/components/Card/CardDetail';
 import { SearchFilter } from '@/components/UI/SearchFilter';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { COLUMNS, type ColumnType, type Project } from '@/lib/types';
 
 export function KanbanBoard() {
-  const { projects, moveProject, reorderProject, searchQuery, filterTag, filterPriority } = useProjectStore();
+  const { projects, moveProject, reorderProject, searchQuery, filterTag, filterPriority, loading } = useProjectStore();
+  const { user, signOut } = useAuth();
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formDefaultStatus, setFormDefaultStatus] = useState<ColumnType>('idea');
@@ -118,24 +120,39 @@ export function KanbanBoard() {
       <header className="sticky top-0 z-10 flex items-center justify-between bg-board-bg px-6 py-4">
         <div>
           <h1 className="text-xl font-bold text-text-primary">Dev Kanban</h1>
-          <p className="text-xs text-text-secondary">Personal Project Board</p>
+          <p className="text-xs text-text-secondary">
+            {user?.user_metadata?.full_name ?? user?.email ?? 'Personal Project Board'}
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setEditProject(undefined);
-            setFormDefaultStatus('idea');
-            setFormOpen(true);
-          }}
-          className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-accent-primary/80"
-          aria-label="Create new project"
-        >
-          + New Project
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setEditProject(undefined);
+              setFormDefaultStatus('idea');
+              setFormOpen(true);
+            }}
+            className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-accent-primary/80"
+            aria-label="Create new project"
+          >
+            + New Project
+          </button>
+          <button
+            type="button"
+            onClick={signOut}
+            className="rounded-lg border border-border-color px-3 py-2 text-xs text-text-secondary transition-colors hover:bg-card-bg hover:text-text-primary"
+          >
+            로그아웃
+          </button>
+        </div>
       </header>
 
       {/* Search & Filter Bar */}
       <SearchFilter />
+
+      {loading && (
+        <div className="px-6 py-2 text-center text-sm text-text-secondary">불러오는 중...</div>
+      )}
 
       {/* Board */}
       <DndContext

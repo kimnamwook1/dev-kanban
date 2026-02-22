@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --board-bg: #0F0F0F;
+  --column-bg: #1A1A2E;
+  --card-bg: #16213E;
+  --card-bg-hover: #1a2744;
+  --text-primary: #E0E0E0;
+  --text-secondary: #A0A0A0;
+  --accent-primary: #0F3460;
+  --accent-urgent: #E94560;
+  --priority-high: #E94560;
+  --priority-medium: #F0C040;
+  --priority-low: #4DA8DA;
+  --column-idea: #9B59B6;
+  --column-progress: #3498DB;
+  --column-done: #2ECC71;
+  --border-color: #2a2a4a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-board-bg: var(--board-bg);
+  --color-column-bg: var(--column-bg);
+  --color-card-bg: var(--card-bg);
+  --color-card-bg-hover: var(--card-bg-hover);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-urgent: var(--accent-urgent);
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+  --color-column-idea: var(--column-idea);
+  --color-column-progress: var(--column-progress);
+  --color-column-done: var(--column-done);
+  --color-border-color: var(--border-color);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background-color: var(--board-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }

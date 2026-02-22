@@ -115,7 +115,7 @@ export function KanbanBoard() {
   return (
     <div className="flex min-h-screen flex-col bg-board-bg">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4">
+      <header className="sticky top-0 z-10 flex items-center justify-between bg-board-bg px-6 py-4">
         <div>
           <h1 className="text-xl font-bold text-text-primary">Dev Kanban</h1>
           <p className="text-xs text-text-secondary">Personal Project Board</p>
@@ -128,6 +128,7 @@ export function KanbanBoard() {
             setFormOpen(true);
           }}
           className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-accent-primary/80"
+          aria-label="Create new project"
         >
           + New Project
         </button>
@@ -143,7 +144,7 @@ export function KanbanBoard() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-1 gap-4 px-6 pb-6">
+        <div className="flex flex-1 gap-4 overflow-x-auto px-6 pb-6">
           {COLUMNS.map((col) => (
             <Column
               key={col.key}

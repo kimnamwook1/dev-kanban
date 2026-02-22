@@ -5,6 +5,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { Lightbulb, Rocket, CheckCircle } from 'lucide-react';
 import type { ColumnType, Project } from '@/lib/types';
 import { ProjectCard } from '@/components/Card/ProjectCard';
 
@@ -29,6 +30,12 @@ const badgeBgMap: Record<ColumnType, string> = {
   done: 'bg-column-done',
 };
 
+const emptyStateConfig: Record<ColumnType, { icon: typeof Lightbulb; text: string }> = {
+  idea: { icon: Lightbulb, text: 'No ideas yet' },
+  'in-progress': { icon: Rocket, text: 'Nothing in progress' },
+  done: { icon: CheckCircle, text: 'No completed projects' },
+};
+
 export function Column({ status, label, color, projects, onAddClick, onCardClick }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
@@ -36,12 +43,13 @@ export function Column({ status, label, color, projects, onAddClick, onCardClick
   });
 
   const sortableIds = projects.map((p) => p.id);
+  const EmptyIcon = emptyStateConfig[status].icon;
 
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-1 flex-col rounded-lg border-l-4 bg-column-bg ${borderColorMap[status]} ${
-        isOver ? 'ring-2 ring-white/10' : ''
+      className={`flex min-w-[300px] flex-1 flex-col rounded-lg border-l-4 bg-column-bg transition-shadow duration-200 ${borderColorMap[status]} ${
+        isOver ? 'ring-2 ring-white/10 shadow-lg shadow-white/5' : ''
       }`}
       style={{ minHeight: 'calc(100vh - 8rem)' }}
     >
@@ -77,9 +85,18 @@ export function Column({ status, label, color, projects, onAddClick, onCardClick
           ))}
         </SortableContext>
 
-        {projects.length === 0 && (
+        {projects.length === 0 && !isOver && (
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 py-12">
+            <EmptyIcon className="h-8 w-8 text-text-secondary/30" strokeWidth={1.5} />
+            <span className="text-xs text-text-secondary/50">
+              {emptyStateConfig[status].text}
+            </span>
+          </div>
+        )}
+
+        {projects.length === 0 && isOver && (
           <div className="flex flex-1 items-center justify-center py-8 text-xs text-text-secondary">
-            Drop projects here
+            Drop here
           </div>
         )}
       </div>
@@ -88,6 +105,7 @@ export function Column({ status, label, color, projects, onAddClick, onCardClick
       <button
         type="button"
         onClick={onAddClick}
+        aria-label={`Add project to ${label}`}
         className="mx-3 mb-3 flex items-center justify-center gap-1 rounded-md border border-dashed border-border-color py-2 text-xs text-text-secondary transition-colors hover:border-text-secondary hover:text-text-primary"
       >
         <span className="text-base leading-none">+</span>

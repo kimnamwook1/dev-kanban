@@ -13,12 +13,15 @@ import {
 } from '@dnd-kit/core';
 import { Column } from './Column';
 import { ProjectCard } from '@/components/Card/ProjectCard';
+import { ProjectForm } from '@/components/Form/ProjectForm';
 import { useProjectStore } from '@/store/useProjectStore';
 import { COLUMNS, type ColumnType, type Project } from '@/lib/types';
 
 export function KanbanBoard() {
   const { projects, moveProject, reorderProject } = useProjectStore();
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formDefaultStatus, setFormDefaultStatus] = useState<ColumnType>('idea');
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -91,6 +94,10 @@ export function KanbanBoard() {
         </div>
         <button
           type="button"
+          onClick={() => {
+            setFormDefaultStatus('idea');
+            setFormOpen(true);
+          }}
           className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-accent-primary/80"
         >
           + New Project
@@ -112,6 +119,10 @@ export function KanbanBoard() {
               label={col.label}
               color={col.color}
               projects={getProjectsByStatus(col.key)}
+              onAddClick={() => {
+                setFormDefaultStatus(col.key);
+                setFormOpen(true);
+              }}
             />
           ))}
         </div>
@@ -122,6 +133,12 @@ export function KanbanBoard() {
           ) : null}
         </DragOverlay>
       </DndContext>
+
+      <ProjectForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        defaultStatus={formDefaultStatus}
+      />
     </div>
   );
 }

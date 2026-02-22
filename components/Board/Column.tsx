@@ -13,6 +13,7 @@ interface ColumnProps {
   label: string;
   color: string;
   projects: Project[];
+  onAddClick?: () => void;
 }
 
 const borderColorMap: Record<ColumnType, string> = {
@@ -27,7 +28,7 @@ const badgeBgMap: Record<ColumnType, string> = {
   done: 'bg-column-done',
 };
 
-export function Column({ status, label, color, projects }: ColumnProps) {
+export function Column({ status, label, color, projects, onAddClick }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: status,
     data: { type: 'column', status },
@@ -81,6 +82,7 @@ export function Column({ status, label, color, projects }: ColumnProps) {
       {/* Add Button */}
       <button
         type="button"
+        onClick={onAddClick}
         className="mx-3 mb-3 flex items-center justify-center gap-1 rounded-md border border-dashed border-border-color py-2 text-xs text-text-secondary transition-colors hover:border-text-secondary hover:text-text-primary"
       >
         <span className="text-base leading-none">+</span>

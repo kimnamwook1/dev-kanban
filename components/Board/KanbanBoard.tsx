@@ -12,6 +12,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { Column } from './Column';
+import { ProjectCard } from '@/components/Card/ProjectCard';
 import { useProjectStore } from '@/store/useProjectStore';
 import { COLUMNS, type ColumnType, type Project } from '@/lib/types';
 
@@ -117,14 +118,7 @@ export function KanbanBoard() {
 
         <DragOverlay>
           {activeProject ? (
-            <div className="w-64 rounded-md bg-card-bg px-3 py-2.5 text-sm text-text-primary opacity-80 shadow-lg ring-1 ring-white/10">
-              <div className="font-medium">{activeProject.title}</div>
-              {activeProject.description && (
-                <div className="mt-1 line-clamp-2 text-xs text-text-secondary">
-                  {activeProject.description}
-                </div>
-              )}
-            </div>
+            <ProjectCard project={activeProject} isDragOverlay />
           ) : null}
         </DragOverlay>
       </DndContext>

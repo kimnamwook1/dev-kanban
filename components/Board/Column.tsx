@@ -6,6 +6,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { ColumnType, Project } from '@/lib/types';
+import { ProjectCard } from '@/components/Card/ProjectCard';
 
 interface ColumnProps {
   status: ColumnType;
@@ -66,17 +67,7 @@ export function Column({ status, label, color, projects }: ColumnProps) {
           strategy={verticalListSortingStrategy}
         >
           {projects.map((project) => (
-            <div
-              key={project.id}
-              className="rounded-md bg-card-bg px-3 py-2.5 text-sm text-text-primary transition-colors hover:bg-card-bg-hover"
-            >
-              <div className="font-medium">{project.title}</div>
-              {project.description && (
-                <div className="mt-1 line-clamp-2 text-xs text-text-secondary">
-                  {project.description}
-                </div>
-              )}
-            </div>
+            <ProjectCard key={project.id} project={project} />
           ))}
         </SortableContext>
 
